@@ -298,8 +298,9 @@ Options allowed with -a:
   -s	SMTP server address
   -S	SMTP server port
   -x	Password for account (recommended to be in double quotes)
-  -P	Pass Prefix (prefix of the file where password is stored)
+  -F	Pass Prefix (prefix of the file where password is stored)
   -p	Add for a POP server instead of IMAP.
+  -P	Install for a Protonmail account
   -X	Delete an account's local email too when deleting.
   -o	Configure address, but keep mail online.
   -f	Assume typical English mailboxes without attempting log-on.
@@ -334,7 +335,7 @@ reorder() {
 	' "$tempfile" >> "$muttrc"
 }
 
-while getopts "rfpXlhodTYD:y:i:I:s:S:u:a:n:P:x:m:t:" o; do case "${o}" in
+while getopts "rfpPFXlhodTYD:y:i:I:s:S:u:a:n:P:x:m:t:" o; do case "${o}" in
 	l) setact list || exit 1 ;;
 	r) setact reorder || exit 1 ;;
 	d) setact delete || exit 1 ;;
@@ -348,7 +349,7 @@ while getopts "rfpXlhodTYD:y:i:I:s:S:u:a:n:P:x:m:t:" o; do case "${o}" in
 	S) setact add || exit 1 ; sport="$OPTARG" ;;
 	u) setact add || exit 1 ; login="$OPTARG" ;;
 	n) setact add || exit 1 ; realname="$OPTARG" ;;
-	P) setact add || exit 1 ; passprefix="$OPTARG" ;;
+	F) setact add || exit 1 ; passprefix="$OPTARG" ;;
 	m) setact add || exit 1 ; maxmes="$OPTARG" ;;
 	o) setact add || exit 1 ; type="online" ;;
 	p) setact add || exit 1 ; type="pop"; protocol="pop3s" ; iport="${iport:-995}" ;;
@@ -357,6 +358,16 @@ while getopts "rfpXlhodTYD:y:i:I:s:S:u:a:n:P:x:m:t:" o; do case "${o}" in
 	X) setact delete || exit 1 ; purge=True ;;
 	t) setact toggle || exit 1 ; cronmin="$OPTARG" ;;
 	T) setact toggle || exit 1 ;;
+  P) echo "NOTE: Protonmail users must install and configure Protonmail Bridge first for the first sync to work."
+		protocol="imap"
+		imap="127.0.0.1"
+		iport="1143"
+		smtp="127.0.0.1"
+		sport="1025"
+		auth="login"
+  		tlsline="tls_fingerprint $(msmtp --serverinfo --host=$smtp --port=$sport --tls --tls-certcheck=off | sed -n '/SHA256:/ s/^\s*SHA256:\s*// p')"
+		setact add || exit 1
+		;;
 	*) mwinfo;  exit 1 ;;
 esac done
 
