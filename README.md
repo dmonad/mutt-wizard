@@ -1,5 +1,10 @@
 # mutt-wizard
 
+This is a custom mutt-wizard that allows configuration via hydroxide protonmail proxy.
+```sh
+mw -H -a email@pm.me -u accountname
+```
+
 https://muttwizard.com/
 
 Get this great stuff without effort:

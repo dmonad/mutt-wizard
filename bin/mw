@@ -335,7 +335,7 @@ reorder() {
 	' "$tempfile" >> "$muttrc"
 }
 
-while getopts "rfpPFXlhodTYD:y:i:I:s:S:u:a:n:P:x:m:t:" o; do case "${o}" in
+while getopts "rfpHPFXlhodTYD:y:i:I:s:S:u:a:n:P:x:m:t:" o; do case "${o}" in
 	l) setact list || exit 1 ;;
 	r) setact reorder || exit 1 ;;
 	d) setact delete || exit 1 ;;
@@ -358,6 +358,15 @@ while getopts "rfpPFXlhodTYD:y:i:I:s:S:u:a:n:P:x:m:t:" o; do case "${o}" in
 	X) setact delete || exit 1 ; purge=True ;;
 	t) setact toggle || exit 1 ; cronmin="$OPTARG" ;;
 	T) setact toggle || exit 1 ;;
+  H) echo "NOTE: Protonmail users must install and configure Protonmail Bridge first for the first sync to work."
+		protocol="imap"
+		imap="127.0.0.1"
+		iport="1143"
+		smtp="127.0.0.1"
+		sport="1025"
+		auth="login"
+		setact add || exit 1
+		;;
   P) echo "NOTE: Protonmail users must install and configure Protonmail Bridge first for the first sync to work."
 		protocol="imap"
 		imap="127.0.0.1"
